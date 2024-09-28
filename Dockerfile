@@ -1,6 +1,5 @@
-ARG TARGETPLATFORM
-ARG ARCH=${TARGETPLATFORM##*/}
-FROM openwrt/rootfs:${ARCH}-openwrt-23.05
+FROM --platform=linux/amd64 openwrt/rootfs:x86_64-openwrt-23.05
+FROM --platform=linux/aarch64_generic openwrt/rootfs:aarch64_generic-openwrt-23.05
 RUN mkdir -p /var/lock
 RUN opkg remove --force-depends \
       dnsmasq* \
