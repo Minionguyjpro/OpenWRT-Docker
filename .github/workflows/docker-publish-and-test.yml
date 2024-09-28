@@ -17,6 +17,8 @@ on:
     types: [published]
 
 env:
+  # Lowercase repository environment variable
+  repo_lower: ${{ github.repository | toLowerCase() }}
   # Sets the Docker registry
   DOCKER_REGISTRY: docker.io
   # Sets the GitHub registry
