@@ -17,8 +17,6 @@ on:
     types: [published]
 
 env:
-  # Lowercase repository environment variable
-  repo_lower: ${{ toLower(github.repository) }}
   # Sets the Docker registry
   DOCKER_REGISTRY: docker.io
   # Sets the GitHub registry
@@ -47,6 +45,10 @@ jobs:
           repo="${{ github.repository }}"
           repo_lower=$(echo "$repo" | tr '[:upper:]' '[:lower:]')
           echo "repo_lower=$repo_lower" >> $GITHUB_ENV
+
+      - name: Set output for use in another job
+        id: output
+        run: echo "::set-output name=repo_lower::${{ env.repo_lower }}"
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
@@ -152,10 +154,13 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
         if: ${{ github.event_name == 'release' }}
+
+    outputs:
+      repo_lower: ${{ steps.output.outputs.repo_lower }}
   test:
     needs: build
     runs-on: ubuntu-latest
-    container: ${{ env.repo_lower }}:main
+    container: ${{ needs.build.outputs.repo_lower }}:main
     steps:
       - name: Check OpenWRT banner
         run: cat /etc/banner
