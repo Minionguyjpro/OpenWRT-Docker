@@ -1,10 +1,9 @@
 # Use the appropriate base image based on the architecture
-FROM --platform=linux/amd64 openwrt/rootfs:x86_64-openwrt-23.05 AS linux/amd64
-FROM --platform=linux/aarch64_generic openwrt/rootfs:aarch64_generic-openwrt-23.05 AS linux/aarch64_generic
+FROM --platform=linux/amd64 openwrt/rootfs:x86_64-openwrt-23.05 as amd64
+FROM --platform=linux/aarch64_generic openwrt/rootfs:aarch64_generic-openwrt-23.05 as arm64
 
-# Use the final base image based on the build architecture
-# This stage will be determined at build time
-FROM ${TARGETPLATFORM}
+# Build from the architectures
+FROM $BUILDARCH
 
 # Create necessary directory and install packages
 RUN mkdir -p /var/lock && \
